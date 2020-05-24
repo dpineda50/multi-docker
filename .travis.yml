@@ -1,0 +1,20 @@
+language: generic
+sudo: required
+services:
+    - docker
+before_install:
+    - docker build -t danielpineda/react-test -f ./client/Dockerfile.dev ./client
+script:
+    - docker run -e CI=true danielpineda/react-test npm test
+
+after_success:
+    - docker build -t danielpineda/multi-client ./client
+    - docker build -t danielpineda/multi-nginx ./nginx
+    - docker build -t danielpineda/multi-server ./server
+    - docker build -t danielpineda/multi-worker ./worker
+    # push to docker hub
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    - docker push danielpineda/multi-client
+    - docker push danielpineda/multi-nginx
+    - docker push danielpineda/multi-server
+    - docker push danielpineda/multi-worker
