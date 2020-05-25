@@ -18,3 +18,15 @@ after_success:
     - docker push dpineda50/multi-nginx
     - docker push dpineda50/multi-server
     - docker push dpineda50/multi-worker
+deploy:
+    edge: true
+    provider: elasticbeanstalk
+    region: us-west-2
+    app: multi-docker
+    env: MultiDocker-env
+    bucket_name: elasticbeanstalk-us-west-2-042185984622
+    bucket_path: dokcer-multi
+    on:
+        branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
